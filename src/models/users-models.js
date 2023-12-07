@@ -103,3 +103,16 @@ exports.updateUser = (id, update) => {
     })
 }
 
+exports.deleteUser = (id) => {
+  return new Promise((resolve, reject) => {
+    connection.query("DELETE FROM users WHERE iduser = ?", [id], (error, result) => {
+      if (error) {
+        console.log(error);
+        reject(error);
+      } else {
+        console.log("Utilisateur supprimé, ID:", id);
+        resolve(`Utilisateur avec l'ID ${id} a été supprimé.`);
+      }
+    });
+  });
+};

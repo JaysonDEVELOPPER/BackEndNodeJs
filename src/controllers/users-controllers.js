@@ -1,4 +1,4 @@
-const {getAllUsers, getByName, getById,createUser, getByEmail, updateUser} = require("../models/users-models") // routes vers le model et le nom de la function appeler
+const {getAllUsers, getByName, getById,createUser, getByEmail, updateUser,deleteUser} = require("../models/users-models") // routes vers le model et le nom de la function appeler
 const bcrypt = require("bcrypt") // permet d'utiliser la bibliotèque pour hash les passwords
 const jwt = require("jsonwebtoken") // permet de verifier et de comparer
 require('dotenv').config()
@@ -99,6 +99,23 @@ exports.updateUsers = async (req,res) => {
     }
 }
 
+
+exports.deleteUsers = async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+ 
+      const userExist = await getById(id);
+      if (!userExist || userExist.length === 0) {
+        return res.status(404).json({ message: `Utilisateur avec l'ID ${id} n'existe pas.` });
+      }
+  
+      const deleteUsers = await deleteUser(id);
+      res.status(200).json({deleteUsers:deleteUsers, message: `Utilisateur correctement supprimer` });
+    } catch (error) {
+      console.error('Erreur dans le contrôleur deleteUser :', error);
+      res.status(500).json({ error, message: 'Erreur lors de la suppression de l\'utilisateur.' });
+    }
+  };
 
 exports.loginUser = async (req,res) => {
     try {
