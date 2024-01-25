@@ -74,14 +74,30 @@ exports.createUser = (infosUsers) => {
   });
 };
 
+
 exports.getByEmail = (email) => {
+  return new Promise((resolve, reject) => {
+      connection.query('SELECT * FROM users WHERE email = ?', [email], (error, rows, fields) => {
+          if (error) {
+              console.log(error);
+              reject(error);
+          } else {
+              const user = JSON.parse(JSON.stringify(rows));
+              console.log(user);
+              resolve(user);
+          }
+      });
+  });
+};
+
+exports.getByEmailVerif = (email) => {
     return new Promise((resolve, reject) => {
         connection.query('SELECT * FROM users WHERE email = ?', [email], (error, rows, fields) => {
             if (error) {
                 console.log(error);
                 reject(error);
             } else {
-                const user = JSON.parse(JSON.stringify(rows[0]));
+                const user = rows[0];
                 console.log(user);
                 resolve(user);
             }
@@ -89,19 +105,35 @@ exports.getByEmail = (email) => {
     });
 };
 
+exports.getByIdlVerif = (id) => {
+  return new Promise((resolve, reject) => {
+      connection.query('SELECT * FROM users WHERE iduser = ?', [id], (error, rows, fields) => {
+          if (error) {
+              console.log(error);
+              reject(error);
+          } else {
+              const user = rows[0];
+              console.log(user);
+              resolve(user);
+          }
+      });
+  });
+};
+
 exports.updateUser = (id, update) => {
     return new Promise((resolve, reject) => {
-        connection.query("UPDATE users SET ? WHERE iduser = ?", [update,id], (error, result) => {
+        connection.query("UPDATE users SET ? WHERE iduser = ?", [update, id], (error, result) => {
             if (error) {
-                console.log(error)
-                reject(error)
+                console.log(error);
+                reject(error);
             } else {
-                console.log("Utilisateur non à jours : ", result.affectedRow)
-                resolve(result.affectedRow)
+                console.log("Utilisateur non à jour : ", result.affectedRows);
+                resolve(result.affectedRows);
             }
-        })
-    })
-}
+        });
+    });
+};
+
 
 exports.deleteUser = (id) => {
   return new Promise((resolve, reject) => {
@@ -110,8 +142,8 @@ exports.deleteUser = (id) => {
         console.log(error);
         reject(error);
       } else {
-        console.log("Utilisateur supprimé, ID:", id);
-        resolve(`Utilisateur avec l'ID ${id} a été supprimé.`);
+        const fonctionne = JSON.parse(JSON.stringify(result))
+        resolve(fonctionne);
       }
     });
   });
